@@ -36,7 +36,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          flavour: |
+          images: ${{ github.GITHUB_REPOSITORY }}
+          flavor: |
             latest=auto
           tags: |
             type=sha
