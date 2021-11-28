@@ -32,6 +32,15 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
       -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          flavour: |
+            latest=auto
+          tags: |
+            type=sha
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       -
