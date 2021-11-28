@@ -58,5 +58,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/a16bitsysop/alpine-build:${{env.timestamp}}
-            ghcr.io/a16bitsysop/alpine-build:latest
+            ghcr.io/$GITHUB_REPOSITORY:${{env.timestamp}}
+            ghcr.io/$GITHUB_REPOSITORY/:latest

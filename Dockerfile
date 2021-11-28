@@ -24,31 +24,31 @@ USER ${NME}
 RUN mkdir "$HOME"/packages
 
 ##################################################################################################
-FROM buildbase AS builddep
-ARG NME
-ENV APORT=lttng-ust
-ENV REPO=main
+#FROM buildbase AS builddep
+#ARG NME
+#ENV APORT=lttng-ust
+#ENV REPO=main
 
 # pull source on host with
 # pull-apk-source.sh main/lttng-ust
 
 # copy aport folder into container
-WORKDIR /tmp/${APORT}
-COPY ${APORT} ./
-RUN sudo chown -R ${NME}:${NME} ../${APORT}
+#WORKDIR /tmp/${APORT}
+#COPY ${APORT} ./
+#RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
-RUN pwd && ls -lah
-RUN just-build.sh
+#RUN pwd && ls -lah
+#RUN just-build.sh
 
 ##################################################################################################
 FROM buildbase AS buildaport
 ARG NME
-ENV APORT=lttng-tools
+ENV APORT=ceph
 ENV REPO=community
 
 # copy built packages from previous step
-COPY --from=builddep /tmp/packages/* /tmp/packages/
-RUN ls -lah /tmp/packages
+#COPY --from=builddep /tmp/packages/* /tmp/packages/
+#RUN ls -lah /tmp/packages
 
 # pull source on host with
 # pull-apk-source.sh community/lttng-tools
