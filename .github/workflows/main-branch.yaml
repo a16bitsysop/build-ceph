@@ -57,6 +57,3 @@ jobs:
           context: .
           platforms: linux/amd64
           push: true
-          tags: |
-            ghcr.io/${{ env.GITHUB_REPOSITORY }}:${{env.timestamp}}
-            ghcr.io/${{ env.GITHUB_REPOSITORY }}/:latest
