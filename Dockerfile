@@ -5,9 +5,10 @@ ARG NME=builder
 FROM alpine:${DVER} AS buildbase
 ARG NME
 
+RUN apk update
 # install abuild deps and add /tmp/packages to repositories
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo \
-&&  echo /tmp/packages >> /etc/apk/repositories
+&&  echo /tmp/pkg >> /etc/apk/repositories
 
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild \
@@ -15,13 +16,10 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild \
 &&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
 &&  sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
-COPY just-build.sh /usr/local/bin/
-RUN chmod 755 /usr/local/bin/just-build.sh
-
 # create keys and copy to global folder, switch to build user
 RUN su ${NME} -c "abuild-keygen -a -i -n"
 USER ${NME}
-RUN mkdir "$HOME"/packages
+WORKDIR /tmp/packages
 
 ##################################################################################################
 #FROM buildbase AS builddep
@@ -37,8 +35,10 @@ RUN mkdir "$HOME"/packages
 #COPY ${APORT} ./
 #RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
-#RUN pwd && ls -lah
-#RUN just-build.sh
+#RUN pwd && ls -RC
+#RUN abuild checksum
+#RUN abuild deps
+#RUN echo "Arch is: $(abuild -A)" && abuild -K -P /tmp/pkg
 
 ##################################################################################################
 FROM buildbase AS buildaport
@@ -58,5 +58,7 @@ WORKDIR /tmp/${APORT}
 COPY ${APORT} ./
 RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
-RUN pwd && ls -lah
-RUN just-build.sh
+RUN pwd && ls -RC
+RUN abuild checksum
+RUN abuild deps
+RUN echo "Arch is: $(abuild -A)" && abuild -K -P /tmp/pkg
