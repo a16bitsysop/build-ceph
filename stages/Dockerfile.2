@@ -1,0 +1,15 @@
+##################################################################################################
+FROM ghcr.io/a16bitsysop/build-ceph:prep AS buildpart
+ARG NME
+ENV APORT=ceph
+ENV REPO=community
+
+# copy aport folder into container
+WORKDIR /tmp/${APORT}
+
+RUN cd src/${APORT}-* \
+&& make -C build src/CMakeFiles/ceph-fuse.dir/all src/CMakeFiles/civetweb_common_objs.dir/all src/CMakeFiles/common-objs.dir/all \
+src/CMakeFiles/cephfs.dir/all src/CMakeFiles/ceph-common.dir/all src/CMakeFiles/common.dir/all src/CMakeFiles/ceph-mds.dir/all \
+src/CMakeFiles/krbd.dir/all src/CMakeFiles/rados_snap_set_diff_obj.dir/all src/CMakeFiles/librados-config.dir/all \
+src/CMakeFiles/rocksdb_ext.dir/all src/CMakeFiles/ceph-mon.dir/all src/CMakeFiles/ceph-osd.dir/all \
+src/CMakeFiles/ceph-syn.dir/all src/CMakeFiles/cephsqlite.dir/all

@@ -1,64 +1,7 @@
-ARG DVER=edge
-ARG NME=builder
-
-##################################################################################################
-FROM alpine:${DVER} AS buildbase
-ARG NME
-
-RUN apk update
-# install abuild deps and add /tmp/packages to repositories
-RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo \
-&&  echo /tmp/pkg >> /etc/apk/repositories
-
-# setup build user
-RUN adduser -D ${NME} && addgroup ${NME} abuild \
-&&  echo "Defaults  lecture=\"never\"" > /etc/sudoers.d/${NME} \
-&&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
-&&  sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
-
-# create keys and copy to global folder, switch to build user
-RUN su ${NME} -c "abuild-keygen -a -i -n"
-USER ${NME}
-WORKDIR /tmp/packages
-
-##################################################################################################
-#FROM buildbase AS builddep
-#ARG NME
-#ENV APORT=lttng-ust
-#ENV REPO=main
-
-# pull source on host with
-# pull-apk-source.sh main/lttng-ust
-
-# copy aport folder into container
-#WORKDIR /tmp/${APORT}
-#COPY ${APORT} ./
-#RUN sudo chown -R ${NME}:${NME} ../${APORT}
-
-#RUN pwd && ls -RC
-#RUN abuild checksum
-#RUN abuild deps
-#RUN echo "Arch is: $(abuild -A)" && abuild -K -P /tmp/pkg
-
-##################################################################################################
-FROM buildbase AS buildaport
+FROM ghcr.io/a16bitsysop/build-ceph:part AS buildaport
 ARG NME
 ENV APORT=ceph
 ENV REPO=community
 
-# copy built packages from previous step
-#COPY --from=builddep /tmp/packages/* /tmp/packages/
-#RUN ls -lah /tmp/packages
-
-# pull source on host with
-# pull-apk-source.sh community/lttng-tools
-
-# copy aport folder into container
-WORKDIR /tmp/${APORT}
-COPY ${APORT} ./
-RUN sudo chown -R ${NME}:${NME} ../${APORT}
-
-RUN pwd && ls -RC
-RUN abuild checksum
-RUN abuild deps
-RUN echo "Arch is: $(abuild -A)" && abuild -K -P /tmp/pkg
+RUN abuild -K build \
+&& abuild -K -P /tmp/pkg package

@@ -57,6 +57,28 @@ jobs:
         name: Get Timestamp
         run: echo "timestamp=$(date '+%Y%m%d_%H%M%S')" >> $GITHUB_ENV
       -
+        name: Prep build image
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          file: stages/Dockerfile.1
+          tags: |
+            ${{ steps.docklabel.outputs.repo }}:prep
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      -
+        name: Build part image
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          file: stages/Dockerfile.2
+          tags: |
+            ${{ steps.docklabel.outputs.repo }}:part
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      -
         name: Build and push
         uses: docker/build-push-action@v2
         with:
