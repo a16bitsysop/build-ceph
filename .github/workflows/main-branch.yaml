@@ -58,6 +58,7 @@ jobs:
         run: echo "timestamp=$(date '+%Y%m%d_%H%M%S')" >> $GITHUB_ENV
       -
         name: Prep build image
+        uses: docker/build-push-action@v2
         with:
           context: .
           platforms: linux/amd64
@@ -69,6 +70,7 @@ jobs:
           cache-to: type=gha,mode=max
       -
         name: Build part image
+        uses: docker/build-push-action@v2
         with:
           context: .
           platforms: linux/amd64
