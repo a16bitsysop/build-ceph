@@ -65,7 +65,7 @@ jobs:
           push: true
           file: stages/Dockerfile.1
           tags: |
-            ${{ steps.docklabel.outputs.repo }}:prep
+            ghcr.io/${{ steps.docklabel.outputs.repo }}:prep
           cache-from: type=gha
           cache-to: type=gha,mode=max
       -
@@ -77,7 +77,7 @@ jobs:
           push: true
           file: stages/Dockerfile.2
           tags: |
-            ${{ steps.docklabel.outputs.repo }}:part
+            ghcr.io/${{ steps.docklabel.outputs.repo }}:part
           cache-from: type=gha
           cache-to: type=gha,mode=max
       -
@@ -88,7 +88,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ steps.docklabel.outputs.repo }}:${{ steps.docklabel.outputs.sha }}
-            ${{ steps.docklabel.outputs.repo }}
+            ghcr.io/${{ steps.docklabel.outputs.repo }}:${{ steps.docklabel.outputs.sha }}
+            ghcr.io/${{ steps.docklabel.outputs.repo }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
