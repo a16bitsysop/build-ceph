@@ -229,6 +229,7 @@ prepare() {
 }
 
 prebuild() {
+	cd "$builddir"
 	export CEPH_BUILD_VIRTUALENV="$builddir"
 
 	# builders keep failing when -jN == nproc
