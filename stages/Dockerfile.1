@@ -5,6 +5,8 @@ ARG NME=builder
 FROM alpine:${DVER} AS buildbase
 ARG NME
 
+RUN sed -E -e "s/^(.*community)/\1\n\1/" -e "s/(.*)community/\1testing/" -i /etc/apk/repositories
+
 RUN apk update
 # install abuild deps and add /tmp/packages to repositories
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo \
@@ -34,5 +36,8 @@ RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
 RUN pwd && ls -RC
 RUN abuild checksum
+RUN abuild unpack
+RUN abuild prepare
 RUN abuild deps
+RUN abuild prebuild
 RUN echo "Arch is: $(abuild -A)"
