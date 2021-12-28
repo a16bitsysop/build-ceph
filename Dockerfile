@@ -5,5 +5,5 @@ ENV APORT=ceph
 ENV REPO=community
 
 RUN V=$(cat APKBUILD | grep "pkgver=" | cut -d'=' -f2) && cd src/${APORT}-${V} \
-&& make -j ${CORES} -C build
+&& make -j ${CORES:=20} -C build
 #&& abuild -K -P /tmp/pkg package
