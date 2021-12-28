@@ -90,7 +90,7 @@ jobs:
           context: .
           platforms: linux/amd64
           push: true
-          build-args: CORES=${{ steps.cpu-cores.outputs.count }}
+          build-args: "CORES=${{ steps.cpu-cores.outputs.count }}"
           tags: |
             ghcr.io/${{ steps.docklabel.outputs.repo }}:${{ steps.docklabel.outputs.sha }}
             ghcr.io/${{ steps.docklabel.outputs.repo }}
